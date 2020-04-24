@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { app } from '@/main.ts';
+import app from '@/main.ts';
 import { getUniqueId } from '@/views/utils/utils.ts';
 
 interface Map {
@@ -60,17 +60,19 @@ axios.interceptors.response.use((res): any => {
 		});
 	}
 	if (/^[5][0-9][0-9]$/.test(String(error.response.status))) {
-		app.$notify.error({
-			message: '服务器内部错误!',
-			position: 'top-right',
-		});
+    app.$notify( {
+      title: '提示',
+      type: 'error',
+      message: '用户名或者密码错误!'
+    } )
 	}
 	console.log(error);
 	if(/^[4][0-9][0-9]$/.test(String(error.response.status))) {
-		app.$notify.error({
-			 message: error.response.data.message ? error.response.data.message : error.response.data.data,
-			 position: 'top-right',
-		});
+    app.$notify( {
+      title: '提示',
+      type: 'error',
+      message: '用户名或者密码错误!'
+    } )
 	}
 	return Promise.reject(error.response.data);
 })

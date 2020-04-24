@@ -9,7 +9,7 @@ export const setDocTitle = ( arg: string ) => {
 		return document.title = 'AEGIS'
 }
 
-export const formatDateTime = ( data: string, format: string ) => {
+export const formatDateTime = ( data: Date, format: string ) => {
 	if (!data) return;
 	let date = new Date(data);
 	let o : Map = {

@@ -1,12 +1,14 @@
 import Vue from 'vue'
-import App from './App.vue'
+import App from '@/App.vue'
 import router from './router'
 import store from './store'
-import '@/views/style/base.less'
+import element from '@/element/index.ts'
+import '@/views/style/aegis-default.less'
 
 Vue.config.productionTip = false
 
-export const app = new Vue({
+Vue.use(element);
+export default new Vue({
   router,
   store,
   render: h => h(App)

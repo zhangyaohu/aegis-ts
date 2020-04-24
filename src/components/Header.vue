@@ -1,0 +1,151 @@
+<template>
+	 <header class="mh-header">
+		  <div class="mh-header__logo"></div>
+			<div class="mh-header__center">
+				<span class="mh-tab__container">
+					<span class="mh-tab__item"
+					      :class="{'active': currSelectTab === 'alarm'}" @click="toggleTab('alarm')">告警</span>
+				  <span class="mh-tab__item"
+					      :class="{'active': currSelectTab === 'oracle'}" @click="toggleTab('oracle')">Oracle</span>
+				  <span class="mh-tab__item"
+					      :class="{'active': currSelectTab === 'config'}" @click="toggleTab('config')">配置</span>
+				</span>
+			</div>
+			<div class="mh-header__right">
+				<span class="mh-header__skin">
+					换肤
+					<ul class="mh-header__skin_select">
+						<li class="mh-header__skin_content" @click.stop="toggleColor('default')">
+							<span class="mh-header__skin_item" style="background: rgb(51, 51, 102)"></span>
+						</li>
+						<li class="mh-header__skin_content"  @click.stop="toggleColor('blue')">
+							<span class="mh-header__skin_item" style="background: #409EFF"></span>
+						</li>
+						<li class="mh-header__skin_content" @click.stop="toggleColor('light')">
+							<span class="mh-header__skin_item" style="background: #fff"></span>
+						</li>
+						<li class="mh-header__skin_content"  @click.stop="toggleColor('dark')">
+							<span class="mh-header__skin_item" style="background: #222"></span>
+						</li>
+					</ul>
+				</span>
+				<span class="mh-header__layout">
+					<span class="mh-header__layout__image"></span>
+					<ul class="mh-header__layout_item__content">
+						<li>{{getUserName}}</li>
+						<li @click="modifyPwd()">修改密码</li>
+						<li @click="() => $router.push({name: 'login'})">退出登录</li>
+					</ul>
+				</span>
+			</div>
+	 </header>
+</template>
+
+<script lang="ts">
+import { changeElementTheme } from '@/views/utils/utils';
+import {alarmList, oracleList, configList} from './menuList';
+// import UserManagerApi from '@/views/config/user/userManagerApi';
+import { Vue, Component, Watch } from 'vue-property-decorator'
+import Mixins from '@/mixins/Mixins.vue';
+interface Iprop {
+  [key: string]: any
+}
+
+@Component({
+  name: 'Header',
+  mixins: [Mixins]
+})
+export default class Header extends Vue {
+
+  private currSelectTab: string = 'alarm-list'
+
+	mounted() {
+    let _this = this
+    const router: any = this.$router
+    console.log(_this.$router);
+		//页面头tab切换
+		_this.currSelectTab = router.history.current.fullPath.split('/')[1];
+		//更新左侧菜单栏
+		_this.updateMenuList(_this.handleSet(_this.currSelectTab));
+  }
+
+    get getUserName() {
+			return localStorage.username ? localStorage.username : '';
+		}
+
+		//切换头部tab
+		toggleTab(arg: string) {
+			let _this = this;
+			if(_this.currSelectTab === arg) return;
+			_this.currSelectTab = arg;
+			//更新左侧菜单栏
+			_this.updateMenuList(_this.handleSet(arg));
+			//跳转到默认页
+			_this.handleLinkTo(arg);
+    }
+
+		handleLinkTo(arg: string) {
+			let _this = this;
+			switch(arg) {
+				case 'alarm':
+					_this.$router.push({name: 'alarm-list'});
+				break;
+				case 'oracle':
+				  _this.$router.push({name: 'trend-metric'})
+				break;
+				case 'config':
+					_this.$router.push({name: 'user-manager'})
+					break;
+				default:
+				  _this.$router.push({name: 'alarm-list'})
+			}
+    }
+
+		handleSet(arg: string) {
+			//设置左侧菜单栏数据
+		 let	_this = this, menuList = [];
+			switch(arg) {
+				case 'alarm':
+				  menuList = alarmList;
+				break;
+				case 'oracle':
+				  menuList = oracleList;
+				break;
+				case 'config':
+					menuList = configList;
+					break;
+				default:
+				   menuList = alarmList;
+			}
+			return menuList;
+    }
+
+		toggleColor(theme: string) {
+			//换肤操作
+			let _this = this;
+			localStorage.theme = theme;
+			_this.updateSkin(theme);
+			//切换加载的css
+			changeElementTheme(theme);
+		}
+		  //修改密码
+    // modifyPwd() {
+    //   let _this = this;
+    //   _this.openDialog("ModifyPwdDlg", {
+    //     param: {username: localStorage.username},
+    //     ok: (msg) => {
+    //         return UserManagerApi.modifyPwd(msg)
+    //                            .then((resp) => {
+    //                              _this.$notify.info({message: resp.data, position: 'top-right'});
+    //                            })
+    //     }
+    //   })
+    // }
+  @Watch('$route')
+  function(newVal: Iprop, oldVal: Iprop) {
+    let _this = this;
+		_this.currSelectTab = newVal.fullPath.split('/')[1];
+		_this.updateMenuList(_this.handleSet(_this.currSelectTab));
+  }
+}
+</script>

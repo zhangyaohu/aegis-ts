@@ -19,10 +19,10 @@ input:-moz-autofill {
 	box-sizing: border-box;
 	font-family: helvetica neue,arial,sans-serif;
 	font-size: 14px;
-	color: #fff;
+	color: @color;
 }
 
-html, body, #app, .app-container{
+html, body, .app-container {
 	height: 100%;
 	width: 100%;
 	overflow: hidden;
@@ -138,10 +138,10 @@ li{
 .btn-primary{
 	display: inline-block;
 	padding: 8px 25px;
-	border: 1px solid  #409eff;
+	border: 1px solid @success;
 	border-radius: 3px;
 	cursor: pointer;
-	background: #409eff;
+	background: @success;
 	color: #fff;
 	.text{
 		text-align: center;
@@ -237,10 +237,10 @@ li{
 
 tbody tr{
   &:nth-child(2n+1) {
-    background-color: #DCDFE6;
+    background-color: @bcolor-odd;
 	}
 	&:nth-child(2n) {
-    background-color: #fff;
+    background-color: @bcolor-even;
 	}
 	&:hover>td{
 	  background-color: #a2bbe0!important;
@@ -269,7 +269,7 @@ tbody tr{
     font-style: normal;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    color:  #fff;
+    color:  @menu-title-color!important;
 		padding-right: 10px;
 	}
 	.el-menu-item:hover{
@@ -277,13 +277,13 @@ tbody tr{
 	}
 	.el-menu-item.is-active {
 		.iconfont{
-			color: #3888fa!important;
+			color: @active!important;
 		}
 	 }
 
 	 .el-menu-item{
 		 .title{
-			 color: #fff;
+			 color: @menu-title-color;
 		 }
 	 }
 
@@ -293,10 +293,10 @@ tbody tr{
 
 .el-menu-item.is-active {
 	.iconfont{
-		color:#fff!important;
+		color: @active!important;
 	}
 	.title{
-		color:#fff!important;
+		color: @active!important;
 	}
  }
 

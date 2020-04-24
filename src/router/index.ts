@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
-import Home from '../views/Home.vue'
-const LoginPage = () => import(/* webpackChunkName: 'LoginPage' */'../views/login/LoginPage.vue')
+const LoginPage = () => import(/* webpackChunkName: 'LoginPage' */'@/views/login/LoginPage.vue')
+const Main = () => import(/*webpackChunkName: 'MainPage'*/'@/views/Main.vue');
+const AlarmPage = () => import(/*webpackChunkName: 'MainPage'*/'@/views/alarm/Alarm.vue');
+const TableSpacePage = () => import(/*webpackChunkName: 'TABLESPACEPAGE'*/'@/views/table-space/TableSpacePage.vue');
 
 Vue.use(VueRouter)
 
@@ -19,17 +21,27 @@ const routes: Array<RouteConfig> = [
     }
   },
   {
-    path: '/',
+    path: '/alarm',
     name: 'Home',
-    component: Home
-  },
-  {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    component: Main,
+    children: [
+      {
+        path: 'alarm-list',
+        name: 'alarm-list',
+        component: AlarmPage,
+        meta: {
+          title: '告警明细列表'
+        }
+      },
+      {
+        path: 'tablespace',
+        name: 'tablespace',
+        component: TableSpacePage,
+        meta: {
+          title: '表空间预警'
+        }
+      },
+    ]
   }
 ]
 

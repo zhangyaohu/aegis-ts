@@ -38,10 +38,10 @@ module.exports = {
   lintOnSave: false,
   devServer: {
     host: 'localhost',
-    port: 5555,
+    port: 3333,
     proxy: {
-      '/foo': {
-        target: '<other_url>'
+      '/api': {
+        target: 'http://localhost:5555'
       }
     }
   },

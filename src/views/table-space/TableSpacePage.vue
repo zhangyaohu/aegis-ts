@@ -1,0 +1,399 @@
+<template>
+  <page-template>
+    <template slot="page-header">表空间预警</template>
+    <template slot="page-toolbar">
+      <span class="mh-search">
+        <el-select v-model="selectVal" class="mh-search__select">
+          <el-option
+            v-for="(item, index) in conditionNameList"
+            :key="index"
+            :value="item.value"
+            :label="item.label"
+          ></el-option>
+        </el-select>
+        <mh-input
+          placeholder="请输入查询信息"
+          v-model="searchStr"
+          class="mh-inline"
+          inputClass="mh-input__search"
+          style="padding: 0px 10px 0px 0px;"
+        />
+      </span>
+      <button class="btn-primary" @click="pageIndex = 1;search()">
+        <i class="icon el-icon-search"></i>
+        <span class="text">搜索</span>
+      </button>
+    </template>
+    <template slot="page-table">
+      <mh-table :data-source="dataSource" :loading="loading">
+        <template slot="history" slot-scope="scope" v-if="total>0">
+          <a class="a-link" @click="handleWatchHistroy(scope.data)">查看历史</a>
+        </template>
+      </mh-table>
+      <div class="page-pagination">
+        <pagination
+          :total="total"
+          v-show="total>0"
+          :currentPage="pageIndex"
+          @size-change="handleSizeChange"
+          :pageSize="pageSize"
+          @change="handleCurrentChange"
+        ></pagination>
+      </div>
+    </template>
+    <template slot="page-footer">
+      <mh-drawer :visiable="showDrawer"  @close="showDrawer = false">
+        <template slot="header">
+          <span class="mh-drawer__title">历史详情</span>
+        </template>
+        <template slot="body">
+          <mh-input
+            placeholder="请输入用户名"
+            v-model="name"
+            label="请输入用户名称"
+            style="padding: 0px 10px 10px 0px"
+            class="mh-inline"
+          />
+          <button class="btn-primary" @click="pageHistoryIndex = 1; handleWatchHistroy()">
+            <i class="icon el-icon-search"></i>
+            <span class="text">搜索</span>
+          </button>
+          <mh-table :data-source="historyDataSource" :loading="historyLoading"></mh-table>
+          <div class="page-pagination">
+            <pagination
+              :total="historyTotal"
+              v-show="historyTotal>0"
+              :currentPage="pageHistoryIndex"
+              @size-change="handleHistorySizeChange"
+              :pageSize="pageHistorySize"
+              @change="handleHistoryCurrentChange"
+            ></pagination>
+          </div>
+        </template>
+      </mh-drawer>
+    </template>
+  </page-template>
+</template>
+
+<script lang="ts">
+import TableSpaceApi from "@/views/table-space/tableSpaceApi"
+import { formatDateTime } from "@/views/utils/utils"
+// import Drawer from "@/views/components/Drawer/Drawer"
+import Mixins from "@/mixins/Mixins.vue"
+import { Component, Vue } from 'vue-property-decorator'
+interface IProp {
+  [key: string]: any
+}
+
+@Component({
+  name:  'TableSpacePage',
+   mixins: [Mixins],
+  components: {
+
+  }
+})
+export default class TableSpacePage extends Vue {
+
+  // components: {
+  //   "mh-drawer": Drawer
+  // },
+  private name: string = ''
+  private showDrawer: boolean = false
+  private historyParam: object = {}
+  private itemList: any
+  private pageIndex: number  = 1
+  private pageSize: number = 10
+  private loading: boolean = false
+  private total: number = 0
+  private selectVal: string = 'tablespace'
+  private searchStr: string = ''
+  private sortDirection: string = '-'
+  private sortBy: string = 'gmt_create'
+  private pageHistoryIndex: number = 1
+  private pageHistorySize: number = 10
+  private conditionNameList:Array<any> = [
+        {
+          label: "表空间",
+          value: "tablespace"
+        }
+      ]
+  private historyTotal:number = 0
+  private historyItemList:Array<any> = []
+  private historyLoading: boolean = false
+  private dataSource: IProp = {
+        getItemList: () => this.itemList,
+        type: "",
+        handleSelection: this.handleSelect,
+        handleSort: this.handleSort,
+        fields: [
+          {
+            getContent: (item: IProp) => this.getField("gmt_create", item),
+            getHeaderContent: "更新时间",
+            tooltip: true
+          },
+          {
+            getContent: (item: IProp) => this.getField("tablespace", item),
+            getHeaderContent: "表空间",
+            tooltip: true,
+            sortable: true,
+            field: "tablespace"
+          },
+          {
+            getContent: (item: IProp) => this.getField("total_space", item),
+            getHeaderContent: "存储总数(MB)",
+            tooltip: true,
+            sortable: true,
+            field: "total_space"
+          },
+          {
+            getContent: (item: IProp) => this.getField("used_space", item),
+            getHeaderContent: "使用(MB)",
+            tooltip: true,
+            sortable: true,
+            field: "used_space"
+          },
+          {
+            getContent: (item: IProp) => this.getField("free_space", item),
+            getHeaderContent: "空闲(MB)",
+            tooltip: true,
+            sortable: true,
+            field: "free_space"
+          },
+          {
+            getContent: (item: IProp) => this.getField("diff_space", item),
+            getHeaderContent: "增量(MB)",
+            tooltip: true,
+            sortable: true,
+            field: "diff_space"
+          },
+          {
+            getContent: (item: IProp) => this.getField("avg_space", item),
+            getHeaderContent: "均值(MB)",
+            tooltip: true,
+            sortable: true,
+            field: "avg_space"
+          },
+          {
+            getContent: (item: IProp) => this.getField("used_rate", item),
+            getHeaderContent: "使用率(%)",
+            tooltip: true,
+            sortable: true,
+            field: "used_rate"
+          },
+          {
+            getContent: (item: IProp) => this.getField("used_days", item),
+            getHeaderContent: "可用天数",
+            tooltip: true,
+            sortable: true,
+            field: "used_days"
+          },
+          {
+            getHeaderContent: "历史数据",
+            type: "slot",
+            tooltip: true,
+            slotName: "history"
+          }
+        ]
+      }
+    private historyDataSource: IProp = {
+        getItemList: () => this.historyItemList,
+        type: "",
+        fields: [
+          {
+            getContent: (item: IProp) => this.getField("gmt_create", item),
+            getHeaderContent: "更新时间",
+            tooltip: true
+          },
+          {
+            getContent: (item: IProp) => this.getField("tablespace", item),
+            getHeaderContent: "表空间",
+            tooltip: true
+          },
+          {
+            getContent: (item: IProp) => this.getField("total_space", item),
+            getHeaderContent: "存储总数(MB)",
+            tooltip: true
+          },
+          {
+            getContent: (item: IProp) => this.getField("used_space", item),
+            getHeaderContent: "使用(MB)",
+            tooltip: true
+          },
+          {
+            getContent: (item: IProp) => this.getField("free_space", item),
+            getHeaderContent: "空闲(MB)",
+            tooltip: true
+          },
+          {
+            getContent: (item: IProp) => this.getField("diff_space", item),
+            getHeaderContent: "增量(MB)",
+            tooltip: true
+          },
+          {
+            getContent: (item: IProp) => this.getField("avg_space", item),
+            getHeaderContent: "均值(MB)",
+            tooltip: true
+          },
+          {
+            getContent: (item: IProp) => this.getField("grow_fact", item),
+            getHeaderContent: "增长系数",
+            tooltip: true
+          },
+          {
+            getContent: (item: IProp) => this.getField("used_rate", item),
+            getHeaderContent: "使用率(%)",
+            tooltip: true
+          },
+          {
+            getContent: (item: IProp) => this.getField("used_days", item),
+            getHeaderContent: "可用天数",
+            tooltip: true
+          }
+        ]
+      }
+
+  mounted() {
+    let _this = this;
+    _this.queryList();
+  }
+
+    toggleTab(tab: IProp) {
+      let _this = this;
+      _this.currSelectTab = tab.value;
+    }
+    getCondition() {
+      let _this = this;
+      return {
+        limit: _this.pageSize,
+        start: (_this.pageIndex - 1) * _this.pageSize,
+        [_this.selectVal]: _this.searchStr,
+        sort: `${_this.sortDirection}${_this.sortBy}`
+      };
+    }
+    //查询列表
+    queryList() {
+      this.loading = true;
+      TableSpaceApi.queryList(this.getCondition()).then((resp: IProp) => {
+        this
+          .updateTableList({
+            tableName: "tableSpace",
+            list: resp.data
+          })
+          .then(() => {
+             this.itemList = this.$store.state.db.tableSpace;
+             this.total = resp.total;
+             this.loading = false;
+          })
+          .catch(() => {
+             this.loading = false;
+          });
+      });
+    }
+    //填充表数据
+    getField(field: string, item: IProp) {
+      debugger;
+      let _this = this,
+        normalFields = [
+          "tablespace",
+          "used_days",
+          "used_space",
+          "used_rate",
+          "diff_space",
+          "avg_space",
+          "free_space",
+          "total_space"
+        ];
+      if (normalFields.includes(field)) return item[field];
+      if (field === "gmt_create")
+        return formatDateTime(item[field], "yyyy-MM-dd hh:mm:ss");
+    }
+    //获得查询历史条件
+    getHistoryCondition(param: IProp) {
+      let _this = this;
+      return {
+        tablespace:param.tablespace,
+        starttime: formatDateTime(
+          new Date(
+            new Date(param.gmt_create).getTime() - 30 * 24 * 60 * 60 * 1000
+          ),
+          "yyyy-MM-dd hh:mm:ss"
+        ),
+        endtime: formatDateTime(param.gmt_create, "yyyy-MM-dd hh:mm:ss"),
+        limit: _this.pageHistorySize,
+        start: ( _this.pageHistoryIndex - 1 ) * _this.pageHistorySize,
+        service: param.service
+      };
+    }
+    //查看历史回调
+    handleWatchHistroy(param?: IProp) {
+      let _this = this;
+      if(param)
+      _this.historyParam = param;
+      TableSpaceApi.queryList(_this.getHistoryCondition(_this.historyParam)).then((resp: IProp) => {
+        _this
+          .updateTableList({
+            tableName: "tableHistory",
+            list: resp.data
+          })
+          .then(() => {
+            _this.historyItemList = _this.$store.state.db.tableHistory;
+            _this.historyTotal = resp.total;
+            _this.historyLoading = false;
+          })
+          .catch(() => {
+            _this.historyLoading = false;
+          });
+      });
+      _this.showDrawer = true;
+    }
+    //改变每页条数
+    handleSizeChange(size: number) {
+      let _this = this;
+      if (size === _this.pageSize) return;
+      _this.pageSize = size;
+      _this.pageIndex = 1;
+      _this.queryList();
+    }
+    //改变当前页数
+    handleCurrentChange(pageIndex: number) {
+      let _this = this;
+      if (pageIndex === _this.pageIndex) return;
+      _this.pageIndex = pageIndex;
+      _this.queryList();
+    }
+    //搜索表格
+    search() {
+      let _this = this;
+      _this.queryList();
+    }
+    //排序
+    handleSort(sort: IProp) {
+      let _this = this;
+      if(!sort.order) return;
+      _this.sortDirection = sort.order = 'descending' ? '-' : '+';
+      _this.sortBy = sort.prop;
+      _this.queryList();
+    }
+    //改变历史数据每页条数
+    handleHistorySizeChange(size: number) {
+      let _this = this;
+      if (size === _this.pageHistorySize) return;
+      _this.pageHistorySize = size;
+      _this.pageHistoryIndex = 1;
+      _this.handleWatchHistroy();
+    }
+    //改变当前页数
+    handleHistoryCurrentChange(pageIndex: number) {
+      let _this = this;
+      if (pageIndex === _this.pageHistoryIndex) return;
+      _this.pageHistoryIndex = pageIndex;
+      _this.handleWatchHistroy();
+    }
+    leaveDrawer(e: any) {
+      debugger;
+      this.showDrawer=false
+    }
+
+}
+</script>
+

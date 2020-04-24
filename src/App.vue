@@ -1,30 +1,28 @@
 <template>
   <div id="app">
-    <!--<img alt="Vue logo" src="./assets/logo.png">-->
-    <!--<HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>-->
     <router-view/>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import HelloWorld from './components/HelloWorld.vue'
+import PageTemplate from '@/components/PageTemplate.vue'
+import Table from '@/components/table/Table.vue'
+import Input from '@/components/tab/Tab.vue'
+import Pagination from '@/components/pagination/Pagination.vue'
+Vue.component('page-template', PageTemplate)
+Vue.component('mh-table', Table)
+Vue.component('mh-input', Input)
+Vue.component('pagination', Pagination)
+@Component
+export default class App extends Vue {
 
-@Component({
-  components: {
-    HelloWorld
-  }
-})
-export default class App extends Vue {}
+}
 </script>
 
 <style lang="less">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+ #app{
+   width: 100%;
+   height: 100%;
+ }
 </style>

@@ -84,20 +84,24 @@ export default class LoginPage extends Vue {
 		return invalid
   }
 
+//登录
   submit () :void {
     let _this = this
     if ( _this.validateAll() ) return
     _this.loading = true
     LoginHttpApi.login(_this.confirmParam())
 			    .then((resp: any) => {
-						console.log(resp);
+            debugger;
+            console.log(resp);
 						if(resp.code === 200) {
 							localStorage.username= _this.name;
 							_this.$router.push('/alarm-list');
 						}else if(resp.code === 400) {
-							_this.$notify.error({
+							_this.$notify( {
+                title: '提示',
+                type: 'error',
 								message: '用户名或者密码错误!'
-							})
+							} )
 						}
 						_this.loading = false;
 					}).catch(() => {
