@@ -37,3 +37,11 @@ yarn run start
 前端框架: elementui + vue + typescript + vue-router + echarts
 
 项目截图：
+1、趋势图
+https://github.com/zhangyaohu/aegis-ts/blob/master/src/assets/metric.png;
+2、用户管理
+https://github.com/zhangyaohu/aegis-ts/blob/master/src/assets/user-list.png；
+3、用户列表
+https://github.com/zhangyaohu/aegis-ts/blob/master/src/assets/user-list.png；
+4、修改用户
+https://github.com/zhangyaohu/aegis-ts/blob/master/src/assets/modify_user.png；
