@@ -72,6 +72,7 @@
 <script lang="ts">
 import TrendMetricHttpApi from "@/views/oracle/tric-metric/tricMetricApi";
 import LineMetric from "@/components/metric/LineMetric.vue";
+import Tab from '@/components/tab/Tab.vue';
 import { formatSize, formatDateTime, getService } from "@/views/utils/utils";
 import { Component, Vue } from "vue-property-decorator";
 import _ from "lodash";
@@ -81,7 +82,8 @@ interface IProp {
 @Component({
   name: "TrendMetricPage",
   components: {
-    "line-metric": LineMetric
+    "line-metric": LineMetric,
+    'mh-tabs': Tab
   }
 })
 export default class TrendMetricPage extends Vue {

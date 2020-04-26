@@ -10,7 +10,8 @@ export const setDocTitle = ( arg: string ) => {
 }
 
 export const formatDateTime = ( data: any, format: string ) => {
-	if (!data) return;
+  if (!data) return;
+  debugger;
 	let date = new Date(data);
 	let o : Map = {
 		"M+": date.getMonth() + 1, //month
@@ -24,10 +25,11 @@ export const formatDateTime = ( data: any, format: string ) => {
 	//格式化年匹配y的时表示有年
 	if (/(y+)/.test(format)) format = format.replace(RegExp.$1,
 		(date.getFullYear() + "").substr(4 - RegExp.$1.length));
-	for (var k in o) if (new RegExp("(" + k + ")").test(format))
-		format = format.replace(RegExp.$1,
+	for (var k in o) if (new RegExp("(" + k + ")").test(format)){
+    format = format.replace(RegExp.$1,
 			RegExp.$1.length == 1 ? o[k] :
-				("00" + o[k]).substr(("" + o[k]).length));
+        ("00" + o[k]).substr(("" + o[k]).length));
+  }
 	return format;
 }
 

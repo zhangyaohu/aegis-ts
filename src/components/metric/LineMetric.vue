@@ -34,6 +34,7 @@
 import { formatDateTime } from "@/views/utils/utils";
 import echarts from 'echarts/lib/echarts';
 import 'echarts/lib/chart/line';
+import "echarts/lib/component/tooltip";
 import _ from "lodash";
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 interface IProp{
@@ -68,7 +69,8 @@ export default  class LineMetric extends Vue {
         tooltip: {
           trigger: "axis",
           confine: true,
-          formatter: function(param: IProp) {
+          formatter: function(param: any) {
+            debugger;
             let str = `<div style="padding: 0px 30px;opcity: 0;box-size: border-box;border-radius: 2px; background: #fff;display: inline-block">
             <div>${param[0].axisValueLabel}</div>`;
             for (let i in param) {
