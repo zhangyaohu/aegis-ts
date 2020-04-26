@@ -73,6 +73,7 @@
       //表格数据
       itemList () {
         let self = this;
+        debugger;
         return self.dataSource.getItemList() || []
       },
       //表格排序

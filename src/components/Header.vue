@@ -129,18 +129,19 @@ export default class Header extends Vue {
 			changeElementTheme(theme);
 		}
 		  //修改密码
-    // modifyPwd() {
-    //   let _this = this;
-    //   _this.openDialog("ModifyPwdDlg", {
-    //     param: {username: localStorage.username},
-    //     ok: (msg) => {
-    //         return UserManagerApi.modifyPwd(msg)
-    //                            .then((resp) => {
-    //                              _this.$notify.info({message: resp.data, position: 'top-right'});
-    //                            })
-    //     }
-    //   })
-    // }
+    modifyPwd() {
+      let _this = this;
+      debugger
+      _this.openDialog("ModifyPwdDlg", {
+        param: {username: localStorage.username},
+        ok: (msg: Iprop) => {
+            // return UserManagerApi.modifyPwd(msg)
+            //                    .then((resp) => {
+            //                      _this.$notify.info({message: resp.data, position: 'top-right'});
+            //                    })
+        }
+      })
+    }
   @Watch('$route')
   function(newVal: Iprop, oldVal: Iprop) {
     let _this = this;

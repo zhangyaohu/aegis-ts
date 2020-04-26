@@ -71,7 +71,7 @@ export default {
         type: Boolean,
         default: false
       },
-      inputClass: String 
+      inputClass: String
     },
 
     data() {

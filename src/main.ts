@@ -8,8 +8,9 @@ import '@/views/style/aegis-default.less'
 Vue.config.productionTip = false
 
 Vue.use(element);
-export default new Vue({
+export let app = new Vue({
+  el: '#app',
   router,
   store,
   render: h => h(App)
-}).$mount('#app')
+})

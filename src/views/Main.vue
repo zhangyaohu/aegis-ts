@@ -20,8 +20,8 @@
         <div style="text-align: center;font-size:12px;">Copyright © 杭州明和科技股份有限公司 保留所有权利</div>
       </div>
     </el-scrollbar>
-		<!-- <dialog-controller/>
-    <hepler-tooltips/> -->
+		<dialog-controller/>
+    <!--<hepler-tooltips/> -->
   </div>
 </template>
 <script lang="ts">

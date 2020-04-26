@@ -100,7 +100,6 @@ export default class TableSpacePage extends Vue {
   private name: string = ''
   private showDrawer: boolean = false
   private historyParam: object = {}
-  private itemList: any
   private pageIndex: number  = 1
   private pageSize: number = 10
   private loading: boolean = false
@@ -121,7 +120,10 @@ export default class TableSpacePage extends Vue {
   private historyItemList:Array<any> = []
   private historyLoading: boolean = false
   private dataSource: IProp = {
-        getItemList: () => this.itemList,
+        getItemList: () => {
+          debugger
+          return  this.itemList
+        },
         type: "",
         handleSelection: this.handleSelect,
         handleSort: this.handleSort,
@@ -252,6 +254,9 @@ export default class TableSpacePage extends Vue {
         ]
       }
 
+  get itemList() {
+    return this.$store.state.db.tableSpace
+  }
   mounted() {
     let _this = this;
     _this.queryList();
@@ -280,7 +285,6 @@ export default class TableSpacePage extends Vue {
             list: resp.data
           })
           .then(() => {
-             this.itemList = this.$store.state.db.tableSpace;
              this.total = resp.total;
              this.loading = false;
           })
@@ -390,7 +394,6 @@ export default class TableSpacePage extends Vue {
       _this.handleWatchHistroy();
     }
     leaveDrawer(e: any) {
-      debugger;
       this.showDrawer=false
     }
 

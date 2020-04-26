@@ -109,7 +109,7 @@ export default class SectionMenu extends Vue {
       el.style.transition = "margin-left .3s ease-out";
     } else {
       el.style.marginLeft = "115pt";
-      mainpath.style.width = "130pt";
+      mainpath.style.width = "134pt";
       maincontent.style.width = "calc(100% - 134pt)";
       mainpath.style.transition = "width .2s ease-out";
       maincontent.style.transition = "width .2s ease-out";

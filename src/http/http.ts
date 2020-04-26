@@ -1,5 +1,5 @@
 import axios from 'axios';
-import app from '@/main.ts';
+import { app } from '@/main.ts';
 import { getUniqueId } from '@/views/utils/utils.ts';
 
 interface Map {

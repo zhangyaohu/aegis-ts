@@ -8,8 +8,10 @@
 import { Component, Vue } from 'vue-property-decorator'
 import PageTemplate from '@/components/PageTemplate.vue'
 import Table from '@/components/table/Table.vue'
-import Input from '@/components/tab/Tab.vue'
+import Input from '@/components/input.vue'
 import Pagination from '@/components/pagination/Pagination.vue'
+import DialogController from '@/views/dialog/Controller.vue';
+Vue.component("dialog-controller", DialogController)
 Vue.component('page-template', PageTemplate)
 Vue.component('mh-table', Table)
 Vue.component('mh-input', Input)

@@ -11,18 +11,20 @@ import { Vue, Component } from 'vue-property-decorator'
 interface Map {
   [key: string]: any
 }
-@Component
-export default class extends Vue {
+@Component({
+  name: 'Mixins'
+})
+export default class Mixins extends Vue {
    @Getter('setMenuList') getMenuList: any
    @Getter('getList') getList: any
    @State(state => state.dialogController.dialogObject) dialogObject: any
 
    get dialogId() {
       //弹出框Id;
-      let _this = this, id = '';
+      let _this = this, id = '', options: any = _this.$vnode.componentOptions;
       //遍历弹出框对象得到当前弹出框的Id,注意弹出框必须写明组件名
       Object.keys(_this.dialogObject).forEach(dialogId => {
-        if(dialogId.indexOf(this['$options'][name])>= 0) {
+        if(dialogId.indexOf(options.Ctor.name)>= 0) {
            id = dialogId;
         }
       })
@@ -48,7 +50,7 @@ export default class extends Vue {
   openDialog(className: string, param: object) {
 			//默认最大垂直浮层999;
       let _this = this,
-				maxZIndex = 999
+        maxZIndex = 999
 			//当zIndex的值大于最大浮层时最大浮层等于该值
       for (let i in Object.keys(_this.dialogObject)) {
         if (_this.dialogObject[Object.keys(_this.dialogObject)[i]].zIndex > maxZIndex) {
